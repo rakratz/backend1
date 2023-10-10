@@ -42,7 +42,7 @@ Para ambos tipos de usuário, precisamos do Nome Completo, CPF, e-mail e Senha. 
 
 * Validar se o usuário tem saldo antes da transferência.
 
-* Antes de finalizar a transferência, deve-se consultar um serviço autorizador externo, use este mock para simular (https://run.mocky.io/v3/8fafdd68-a090-496f-8c9a-3442cf30dae6).
+* Antes de finalizar a transferência, deve-se consultar um serviço autorizador externo, use este mock para simular (https://run.mocky.io/v3/8811cb1f-71b1-4777-8626-68f702f9ab80).
 
 * A operação de transferência deve ser uma transação (ou seja, revertida em qualquer caso de inconsistência) e o dinheiro deve voltar para a carteira do usuário que envia.
 
