@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring Tweet Frontend - Tweets</title>
+
+    <!-- Adicione esses links para incluir o Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+
+<body class="container">
+    <h1 class="mt-5">Spring Tweet Frontend - Tweets</h1>
+
+    <ul id="tweetList" class="list-group mt-3"></ul>
+
+    <script>
+        // Função para carregar e exibir todos os tweets
+        async function loadTweets() {
+            const response = await fetch('http://localhost:8080/api/tweets');
+            const tweets = await response.json();
+
+            const tweetList = document.getElementById('tweetList');
+            tweetList.innerHTML = ''; // Limpa a lista antes de adicionar os tweets
+
+            for (const tweet of tweets) {
+                // Obter detalhes do usuário associado a este tweet
+                const userResponse = await fetch(`http://localhost:8080/api/users/${tweet.tweetUser.userid}`);
+                const user = await userResponse.json();
+
+                const listItem = document.createElement('li');
+                listItem.className = 'list-group-item';
+                listItem.innerHTML = `
+                    <strong>Tweet ID:</strong> ${tweet.id}, 
+                    <strong>Content:</strong> ${tweet.content}, 
+                    <strong>Post Time:</strong> ${tweet.postTime},
+                    <strong>User:</strong> ${user.screenName}
+                    <button class="btn btn-danger btn-sm float-right" onclick="deleteTweet(${tweet.id})">Excluir</button>
+                    <a href="updatetweet.html?id=${tweet.id}" class="btn btn-warning btn-sm float-right mr-2">Atualizar</a>
+                `;
+                tweetList.appendChild(listItem);
+            }
+        }
+
+        // Carrega e exibe os tweets ao carregar a página
+        loadTweets();
+
+        // Função para excluir um tweet
+        async function deleteTweet(tweetId) {
+            try {
+                const response = await fetch(`http://localhost:8080/api/tweets/${tweetId}`, {
+                    method: 'DELETE',
+                });
+
+                if (response.ok) {
+                    // Recarrega a lista de tweets após a exclusão
+                    loadTweets();
+                } else {
+                    console.error('Erro ao excluir o tweet.');
+                }
+            } catch (error) {
+                console.error('Erro ao excluir o tweet:', error);
+            }
+        }
+    </script>
+   
+    <!-- Link para a página index.html -->
+    <a href="index.html" class="btn btn-secondary mt-3">Post New Tweets</a>
+</body>
+
+</html>

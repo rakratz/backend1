@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Spring Tweet - Atualizar Usuário</title>
+	<!-- Adicione esses links para incluir o Bootstrap -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+
+<body class="container">
+	<h1 class="mt-5">Spring Tweet - Atualizar Usuário</h1>
+
+	<form id="updateUserForm" class="mt-3">
+		<div class="form-group">
+			<label for="password">Senha:</label>
+			<input type="password" class="form-control" id="password" name="password" required>
+		</div>
+
+		<div class="form-group">
+			<label for="screenName">Nome de Usuário:</label>
+			<input type="text" class="form-control" id="screenName" name="screenName" required>
+		</div>
+
+		<div class="form-group">
+			<label for="profileImage">URL da Imagem de Perfil:</label>
+			<input type="text" class="form-control" id="profileImage" name="profileImage" required>
+		</div>
+
+		<div class="form-group">
+			<label for="following">Seguindo:</label>
+			<input type="text" class="form-control" id="following" name="following" required>
+		</div>
+
+		<div class="form-group">
+			<label for="bio">Bio:</label>
+			<textarea class="form-control" id="bio" name="bio" rows="4" required></textarea>
+		</div>
+
+		<div class="form-group">
+			<label for="role">Função:</label>
+			<select class="form-control" id="role" name="role" required>
+				<option value="ADMIN">Administrador</option>
+				<option value="USER">Usuário</option>
+			</select>
+		</div>
+
+		<!-- Adicione os botões de atualizar e excluir -->
+		<button type="button" class="btn btn-warning" onclick="updateUser()">Atualizar</button>
+	</form>
+
+	<!-- Adicione um botão para voltar à página de tweets -->
+	<a href="user.html" class="btn btn-secondary mt-3">Voltar aos Usuários</a>
+
+	<script>
+		// Função para carregar os dados do usuário ao carregar a página
+		window.onload = async function () {
+			const userId = getQueryStringParameter('id');
+			if (userId) {
+				await loadUserData(userId);
+			}
+		};
+
+		// Função para obter parâmetros da string de consulta na URL
+		function getQueryStringParameter(name) {
+			const urlParams = new URLSearchParams(window.location.search);
+			return urlParams.get(name);
+		}
+
+		// Função para carregar dados do usuário
+		async function loadUserData(userId) {
+			try {
+				const response = await fetch(`http://localhost:8080/api/users/${userId}`);
+				const user = await response.json();
+
+				document.getElementById('password').value = user.password;
+				document.getElementById('screenName').value = user.screenName;
+				document.getElementById('profileImage').value = user.profileImage;
+				document.getElementById('following').value = user.following;
+				document.getElementById('bio').value = user.bio;
+				document.getElementById('role').value = user.role;
+			} catch (error) {
+				console.error('Error:', error);
+			}
+		}
+
+		// Adapte esta função para enviar a solicitação de atualização do usuário
+		async function updateUser() {
+			const userId = getQueryStringParameter('id');
+			const password = document.getElementById('password').value;
+			const screenName = document.getElementById('screenName').value;
+			const profileImage = document.getElementById('profileImage').value;
+			const following = document.getElementById('following').value;
+			const bio = document.getElementById('bio').value;
+			const role = document.getElementById('role').value;
+
+			const updatedUser = {
+				password: password,
+				screenName: screenName,
+				profileImage: profileImage,
+				following: following,
+				bio: bio,
+				role: role
+			};
+
+			try {
+				const response = await fetch(`http://localhost:8080/api/users/${userId}`, {
+					method: 'PUT',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify(updatedUser),
+				});
+
+				if (response.ok) {
+					const data = await response.json();
+					console.log('Success:', data);
+					// Redirecionar para a página de usuários após a atualização
+					window.location.href = 'user.html';
+				} else {
+					const errorData = await response.json();
+					console.error('Error:', errorData);
+					// Exibir mensagem de erro se necessário
+				}
+			} catch (error) {
+				console.error('Error:', error);
+				// Exibir mensagem de erro se necessário
+			}
+		}
+
+
+	</script>
+</body>
+
+</html>

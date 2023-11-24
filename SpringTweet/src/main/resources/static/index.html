@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring Tweet Frontend</title>
+
+    <!-- Adicione esses links para incluir o Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+
+<body class="container">
+    <h1 class="mt-5">Spring Tweet Frontend</h1>
+
+    <form id="tweetForm" class="mt-3">
+        <div class="form-group">
+            <label for="content">Tweet Content:</label>
+            <input type="text" class="form-control" id="content" name="content" required>
+        </div>
+
+        <div class="form-group">
+            <label for="userid">User:</label>
+            <select class="form-control" id="userid" name="userid" required></select>
+        </div>
+
+        <button type="button" class="btn btn-primary" onclick="createTweet()">Create Tweet</button>
+        <p id="successMessage" class="mt-2" style="color: green;"></p>
+    </form>
+
+    <p class="mt-3">
+        <!-- Link para a página tweets.html -->
+        <a href="tweets.html" class="btn btn-secondary">Ver Tweets</a>
+    </p>
+    <p>
+        <!-- Link para a página user.html -->
+        <a href="user.html" class="btn btn-secondary">Ver Usuários</a>
+    </p>
+
+    <script>
+        // Função para carregar a lista de usuários no menu suspenso
+        async function loadUserDropdown() {
+            const response = await fetch('http://localhost:8080/api/users');
+            const users = await response.json();
+
+            const userDropdown = document.getElementById('userid');
+            userDropdown.innerHTML = ''; // Limpa o menu suspenso antes de adicionar os usuários
+
+            users.forEach(user => {
+                const option = document.createElement('option');
+                option.value = user.userid;
+                option.text = user.screenName;
+                userDropdown.add(option);
+            });
+        }
+
+        // Carrega a lista de usuários ao carregar a página
+        loadUserDropdown();
+
+        async function createTweet() {
+            const content = document.getElementById('content').value;
+            const userid = document.getElementById('userid').value;
+
+            const tweet = {
+                content: content,
+                tweetUser: {
+                    userid: parseInt(userid)
+                }
+            };
+
+            try {
+                const response = await fetch('http://localhost:8080/api/tweets', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(tweet),
+                });
+
+                const data = await response.json();
+
+                console.log('Success:', data);
+
+                // Exibe a mensagem de sucesso na tela
+                document.getElementById('successMessage').textContent = 'Tweet postado com sucesso!';
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+    </script>
+</body>
+
+</html>

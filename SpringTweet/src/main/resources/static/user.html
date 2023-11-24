@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Spring Tweet Frontend - Usuários</title>
+
+	<!-- Adicione esses links para incluir o Bootstrap -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+
+<body class="container">
+	<h1 class="mt-5">Spring Tweet Frontend - Usuários</h1>
+
+	<ul id="userList" class="list-group mt-3"></ul>
+
+	<script>
+		// Função para carregar e exibir todos os usuários
+		async function loadUsers() {
+			const response = await fetch('http://localhost:8080/api/users');
+			const users = await response.json();
+
+			const userList = document.getElementById('userList');
+			userList.innerHTML = ''; // Limpa a lista antes de adicionar os usuários
+
+			users.forEach(user => {
+				const listItem = document.createElement('li');
+				listItem.className = 'list-group-item';
+				listItem.textContent = `ID: ${user.userid}, Nome de Usuário: ${user.screenName}, Função: ${user.role}`;
+
+				// Adiciona botões de ação (Atualizar e Excluir) para cada usuário
+				const updateButton = document.createElement('button');
+				updateButton.className = 'btn btn-warning btn-sm ml-2 float-right';
+				updateButton.textContent = 'Atualizar';
+				updateButton.onclick = function () {
+					window.location.href = `updateuser.html?id=${user.userid}`;
+				};
+
+				const deleteButton = document.createElement('button');
+				deleteButton.className = 'btn btn-danger btn-sm ml-2 float-right';
+				deleteButton.textContent = 'Excluir';
+				deleteButton.onclick = function () {
+					deleteUser(user.userid);
+				};
+
+				listItem.appendChild(updateButton);
+				listItem.appendChild(deleteButton);
+
+				userList.appendChild(listItem);
+			});
+		}
+
+		// Carrega e exibe os usuários ao carregar a página
+		loadUsers();
+
+		// Função para excluir um usuário
+		async function deleteUser(userId) {
+			if (confirm('Tem certeza que deseja excluir este usuário?')) {
+				try {
+					const response = await fetch(`http://localhost:8080/api/users/${userId}`, {
+						method: 'DELETE',
+					});
+
+					if (response.ok) {
+						// Recarrega a lista de usuários após a exclusão
+						loadUsers();
+					} else {
+						console.error('Erro ao excluir o usuário.');
+					}
+				} catch (error) {
+					console.error('Erro ao excluir o usuário:', error);
+				}
+			}
+		}
+	</script>
+	<p>
+		<!-- Link para a página newuser.html -->
+		<a href="newuser.html" class="btn btn-primary mt-3">Novo Usuário</a>
+	</p>
+	<p>
+		<!-- Link para a página index.html -->
+		<a href="index.html" class="btn btn-secondary mt-3">Novo Tweet</a>
+	</p>
+</body>
+
+</html>

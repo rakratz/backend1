@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring Tweet Frontend - Atualizar Tweet</title>
+
+    <!-- Adicione esses links para incluir o Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+
+<body class="container">
+    <h1 class="mt-5">Spring Tweet Frontend - Atualizar Tweet</h1>
+
+    <!-- Formulário para atualizar o tweet -->
+    <form id="updateTweetForm" class="mt-3">
+        <div class="form-group">
+            <label for="content">Novo Conteúdo:</label>
+            <input type="text" class="form-control" id="content" name="content" required>
+        </div>
+
+        <!-- Dropdown para selecionar o usuário -->
+        <div class="form-group">
+            <label for="userId">Usuário:</label>
+            <select class="form-control" id="userId" name="userId" required></select>
+        </div>
+
+        <button type="button" class="btn btn-primary" onclick="updateTweet()">Atualizar Tweet</button>
+    </form>
+
+    <!-- Botão para voltar aos tweets -->
+    <a href="tweets.html" class="btn btn-secondary mt-3">Voltar aos Tweets</a>
+
+    <script>
+        // Função para carregar dados do tweet e preencher o formulário
+        window.onload = async function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const tweetId = urlParams.get('id');
+
+            if (tweetId) {
+                const tweetData = await loadTweetData(tweetId);
+                await loadUsers(tweetData.tweetUser.userid);
+            } else {
+                console.error('ID do tweet não encontrado na URL.');
+            }
+        };
+
+        // Função para carregar dados do tweet
+        async function loadTweetData(tweetId) {
+            try {
+                const response = await fetch(`http://localhost:8080/api/tweets/${tweetId}`);
+                const tweetData = await response.json();
+
+                // Preenche o campo de conteúdo do formulário com o conteúdo atual do tweet
+                document.getElementById('content').value = tweetData.content;
+
+                return tweetData;
+            } catch (error) {
+                console.error('Erro ao carregar dados do tweet:', error);
+            }
+        }
+
+        // Função para carregar a lista de usuários no dropdown
+        async function loadUsers(creatorUserId) {
+            try {
+                const response = await fetch('http://localhost:8080/api/users');
+                const users = await response.json();
+
+                const dropdown = document.getElementById('userId');
+
+                // Preenche o dropdown com a lista de usuários
+                users.forEach(user => {
+                    const option = document.createElement('option');
+                    option.value = user.userid;
+                    option.text = user.screenName;
+                    dropdown.add(option);
+
+                    // Se o usuário criou o tweet, selecione automaticamente no dropdown
+                    if (user.userid === creatorUserId) {
+                        option.selected = true;
+                    }
+                });
+            } catch (error) {
+                console.error('Erro ao carregar lista de usuários:', error);
+            }
+        }
+
+        // Função para atualizar o tweet
+        async function updateTweet() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const tweetId = urlParams.get('id');
+            const newContent = document.getElementById('content').value;
+            const selectedUserId = document.getElementById('userId').value;
+
+            const updatedTweet = {
+                content: newContent,
+                tweetUser: {
+                    userid: parseInt(selectedUserId)
+                }
+            };
+
+            try {
+                const response = await fetch(`http://localhost:8080/api/tweets/${tweetId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(updatedTweet),
+                });
+
+                if (response.ok) {
+                    // Redireciona de volta à página de tweets após a atualização
+                    window.location.href = 'tweets.html';
+                } else {
+                    console.error('Erro ao atualizar o tweet.');
+                }
+            } catch (error) {
+                console.error('Erro ao atualizar o tweet:', error);
+            }
+        }
+    </script>
+</body>
+
+</html>

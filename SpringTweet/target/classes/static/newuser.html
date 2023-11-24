@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Spring Tweet - Novo Usuário</title>
+
+	<!-- Adicione esses links para incluir o Bootstrap -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+
+<body class="container">
+	<h1 class="mt-5">Spring Tweet - Novo Usuário</h1>
+
+	<form id="userForm">
+		<div class="form-group">
+			<label for="password">Senha:</label>
+			<input type="password" class="form-control" id="password" name="password" required>
+		</div>
+
+		<div class="form-group">
+			<label for="screenName">Nome de Usuário:</label>
+			<input type="text" class="form-control" id="screenName" name="screenName" required>
+		</div>
+
+		<div class="form-group">
+			<label for="profileImage">URL da Imagem de Perfil:</label>
+			<input type="text" class="form-control" id="profileImage" name="profileImage" required>
+		</div>
+
+		<div class="form-group">
+			<label for="following">Seguindo:</label>
+			<input type="text" class="form-control" id="following" name="following" required>
+		</div>
+
+		<div class="form-group">
+			<label for="bio">Bio:</label>
+			<textarea class="form-control" id="bio" name="bio" rows="4" required></textarea>
+		</div>
+
+		<div class="form-group">
+			<label for="role">Função:</label>
+			<select class="form-control" id="role" name="role" required>
+				<option value="ADMIN">Administrador</option>
+				<option value="USER">Usuário</option>
+			</select>
+		</div>
+
+		<button type="button" class="btn btn-primary" onclick="createUser()">Criar Usuário</button>
+
+		<p id="successMessage" style="color: green;"></p>
+		<p id="errorMessage" style="color: red;"></p>
+	</form>
+
+	<p>
+		<!-- Link para a página index.html -->
+		<a href="index.html" class="btn btn-secondary mt-3">Novo Tweet</a>
+	</p>
+	<p>
+		<!-- Link para a página user.html -->
+		<a href="user.html" class="btn btn-secondary mt-3">Ver Usuários</a>
+	</p>
+
+	<script>
+		async function createUser() {
+			const password = document.getElementById('password').value;
+			const screenName = document.getElementById('screenName').value;
+			const profileImage = document.getElementById('profileImage').value;
+			const following = document.getElementById('following').value;
+			const bio = document.getElementById('bio').value;
+			const role = document.getElementById('role').value;
+
+
+
+			const user = {
+				password: password,
+				screenName: screenName,
+				profileImage: profileImage,
+				following: following,
+				bio: bio,
+				role: role  // Certifique-se de que role é 'USER' ou 'ADMIN'
+			};
+			try {
+				const response = await fetch('http://localhost:8080/api/users', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify(user),
+				});
+
+				if (response.ok) {
+					const data = await response.json();
+					console.log('Success:', data);
+					document.getElementById('successMessage').textContent = 'Usuário criado com sucesso!';
+					document.getElementById('errorMessage').textContent = ''; // Limpa mensagens de erro anteriores
+				} else {
+					const errorData = await response.json();
+					console.error('Error:', errorData);
+					document.getElementById('errorMessage').textContent = `Erro ao criar o usuário: ${errorData.message}`;
+				}
+			} catch (error) {
+				console.error('Error:', error);
+				document.getElementById('errorMessage').textContent = 'Erro ao criar o usuário. Verifique o console para mais detalhes.';
+			}
+		}
+	</script>
+</body>
+
+</html>
