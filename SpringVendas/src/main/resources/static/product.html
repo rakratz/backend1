@@ -1,103 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Produtos</title>
-    <!-- Adicione os links para os estilos do Bootstrap -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- Adicione o link para o script do jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Lista de Produtos</title>
+	<!-- Adicione os links para os estilos do Bootstrap -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<!-- Adicione o link para o script do jQuery -->
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 </head>
+
 <body>
 
-<div class="container mt-5">
-    <h2>Lista de Produtos</h2>
+	<div class="container mt-5">
+		<h2>Lista de Produtos</h2>
 
-    <!-- Tabela para exibir a lista de produtos -->
-    <table class="table">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>Preço</th>
-            <th>Ações</th>
-        </tr>
-        </thead>
-        <tbody id="productTableBody">
-        <!-- Os produtos serão exibidos aqui -->
-        </tbody>
-    </table>
+		<!-- Tabela para exibir a lista de produtos -->
+		<table class="table">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Nome</th>
+					<th>Preço</th>
+					<th>Ações</th>
+				</tr>
+			</thead>
+			<tbody id="productTableBody">
+				<!-- Os produtos serão exibidos aqui -->
+			</tbody>
+		</table>
 
-    <!-- Links para index.html e newproduct.html -->
-    <div class="mt-3">
-        <a href="index.html">Voltar para o Menu</a> |
-        <a href="newproduct.html">Cadastrar Novo Produto</a>
-    </div>
-</div>
 
-<script>
-    // Função para carregar e exibir a lista de produtos
-    function loadProductList() {
-        $.ajax({
-            type: "GET",
-            url: "/api/products", // Atualize com a rota correta
-            success: function (products) {
-                displayProductList(products);
-            },
-            error: function () {
-                console.error("Erro ao obter a lista de produtos.");
-            }
-        });
-    }
+		<!-- Links para index.html e paymentmethod.html -->
+		<div class="mt-3">
+			<a href="index.html" class="btn btn-secondary">Voltar para o Menu</a>
+			<a href="newproduct.html" class="btn btn-secondary">Cadastrar Novo Produto</a>
+		</div>
+	</div>
 
-    // Função para exibir a lista de produtos na tabela
-    function displayProductList(products) {
-        var tableBody = $("#productTableBody");
-        tableBody.empty(); // Limpa a tabela antes de adicionar novos dados
+	<script>
+		// Função para carregar e exibir a lista de produtos
+		function loadProductList() {
+			$.ajax({
+				type: "GET",
+				url: "/api/products", // Atualize com a rota correta
+				success: function (products) {
+					displayProductList(products);
+				},
+				error: function () {
+					console.error("Erro ao obter a lista de produtos.");
+				}
+			});
+		}
 
-        products.forEach(function (product) {
-            var row = "<tr>" +
-                "<td>" + product.id + "</td>" +
-                "<td>" + product.name + "</td>" +
-                "<td>" + product.price + "</td>" +
-                "<td>" +
-                "<a href='#' onclick='editProduct(" + product.id + ")'>Editar</a> | " +
-                "<a href='#' onclick='deleteProduct(" + product.id + ")'>Excluir</a>" +
-                "</td>" +
-                "</tr>";
-            tableBody.append(row);
-        });
-    }
+		// Função para exibir a lista de produtos na tabela
+		function displayProductList(products) {
+			var tableBody = $("#productTableBody");
+			tableBody.empty(); // Limpa a tabela antes de adicionar novos dados
 
-    // Função para editar um produto
-    function editProduct(productId) {
-        // Redirecione para a página de edição com o ID do produto
-        window.location.href = "editproduct.html?id=" + productId;
-    }
+			products.forEach(function (product) {
+				var row = "<tr>" +
+					"<td>" + product.id + "</td>" +
+					"<td>" + product.name + "</td>" +
+					"<td>" + product.price + "</td>" +
+					"<td>" +					
+					"<button class='btn btn-warning' onclick='editProduct(" + product.id + ")'>Atualizar</button> " +
+                    "<button class='btn btn-danger' onclick='deleteProduct(" + product.id + ")'>Excluir</button>" +
+					"</td>" +
+					"</tr>";
+				tableBody.append(row);
+			});
+		}
 
-    // Função para excluir um produto
-    function deleteProduct(productId) {
-        if (confirm("Tem certeza que deseja excluir este produto?")) {
-            $.ajax({
-                type: "DELETE",
-                url: "/api/products/" + productId, // Atualize com a rota correta
-                success: function () {
-                    // Recarregue a lista após a exclusão
-                    loadProductList();
-                },
-                error: function () {
-                    console.error("Erro ao excluir o produto.");
-                }
-            });
-        }
-    }
+		// Função para editar um produto
+		function editProduct(productId) {
+			// Redirecione para a página de edição com o ID do produto
+			window.location.href = "editproduct.html?id=" + productId;
+		}
 
-    // Carregue a lista de produtos ao carregar a página
-    $(document).ready(function () {
-        loadProductList();
-    });
-</script>
+		// Função para excluir um produto
+		function deleteProduct(productId) {
+			if (confirm("Tem certeza que deseja excluir este produto?")) {
+				$.ajax({
+					type: "DELETE",
+					url: "/api/products/" + productId, // Atualize com a rota correta
+					success: function () {
+						// Recarregue a lista após a exclusão
+						loadProductList();
+					},
+					error: function () {
+						console.error("Erro ao excluir o produto.");
+					}
+				});
+			}
+		}
+
+		// Carregue a lista de produtos ao carregar a página
+		$(document).ready(function () {
+			loadProductList();
+		});
+	</script>
 
 </body>
+
 </html>
