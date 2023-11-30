@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova Venda</title>
+    <!-- Adicione os links para os estilos do Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body class="container mt-5">
+    <h2>Nova Venda</h2>
+
+    <!-- Formulário para adicionar uma nova venda -->
+    <form id="newSaleForm">
+        <div class="form-group">
+            <label for="customer">Cliente:</label>
+            <select class="form-control" id="customer" required>
+                <!-- Os clientes serão carregados aqui -->
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="date">Data:</label>
+            <input type="date" class="form-control" id="date" required>
+        </div>
+
+        <div class="form-group">
+            <label for="paymentMethod">Método de Pagamento:</label>
+            <select class="form-control" id="paymentMethod" required>
+                <!-- Os métodos de pagamento serão carregados aqui -->
+            </select>
+        </div>
+
+        <!-- Mensagem de sucesso ou falha -->
+        <div id="message" class="alert" style="display:none;"></div>
+
+        <!-- Botão para adicionar a venda -->
+        <button type="button" class="btn btn-primary" onclick="addSale()">Adicionar Venda</button>
+        
+    </form>
+
+    <!-- Links para index.html e sales.html -->
+    <div class="mt-3">
+        <a href="index.html" class="btn btn-secondary">Voltar para o Menu</a>
+        <a href="sale.html" class="btn btn-secondary">Visualizar Vendas</a>
+        <a href="newsaleitem.html" class="btn btn-primary">Adicionar Item à Venda</a>
+    </div>
+
+    <!-- Adicione os scripts do Bootstrap e jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Adicione scripts personalizados -->
+    <script>
+        // Função para carregar a lista de clientes no dropdown
+        function loadCustomerList() {
+            // Faça uma chamada AJAX para obter a lista de clientes do servidor
+            // Atualize a URL conforme a rota correta do seu servidor
+            $.ajax({
+                type: "GET",
+                url: "/api/customers",
+                success: function (customers) {
+                    displayCustomerList(customers);
+                },
+                error: function () {
+                    console.error("Erro ao obter a lista de clientes.");
+                }
+            });
+        }
+
+        // Função para exibir a lista de clientes no dropdown
+        function displayCustomerList(customers) {
+            var customerDropdown = $("#customer");
+            customerDropdown.empty(); // Limpa o dropdown antes de adicionar novos dados
+
+            customers.forEach(function (customer) {
+                var option = "<option value='" + customer.id + "'>" + customer.name + "</option>";
+                customerDropdown.append(option);
+            });
+        }
+
+        // Função para carregar a lista de métodos de pagamento no dropdown
+        function loadPaymentMethodList() {
+            // Faça uma chamada AJAX para obter a lista de métodos de pagamento do servidor
+            // Atualize a URL conforme a rota correta do seu servidor
+            $.ajax({
+                type: "GET",
+                url: "/api/payment-methods",
+                success: function (paymentMethods) {
+                    displayPaymentMethodList(paymentMethods);
+                },
+                error: function () {
+                    console.error("Erro ao obter a lista de métodos de pagamento.");
+                }
+            });
+        }
+
+        // Função para exibir a lista de métodos de pagamento no dropdown
+        function displayPaymentMethodList(paymentMethods) {
+            var paymentMethodDropdown = $("#paymentMethod");
+            paymentMethodDropdown.empty(); // Limpa o dropdown antes de adicionar novos dados
+
+            paymentMethods.forEach(function (paymentMethod) {
+                var option = "<option value='" + paymentMethod.id + "'>" + paymentMethod.description + "</option>";
+                paymentMethodDropdown.append(option);
+            });
+        }
+
+        // Função para adicionar a venda
+        function addSale() {
+            // Obtenha os valores dos campos
+            var customerId = $("#customer").val();
+            var date = $("#date").val();
+            var paymentMethodId = $("#paymentMethod").val();
+
+            // Crie um objeto JavaScript com os dados da venda
+            var saleData = {
+                customer: { id: customerId },
+                date: date,
+                paymentMethod: { id: paymentMethodId }
+            };
+
+            // Faça uma chamada AJAX para adicionar a venda no servidor
+            // Atualize a URL conforme a rota correta do seu servidor
+            $.ajax({
+                type: "POST",
+                contentType: "application/json",
+                url: "/api/sales",
+                data: JSON.stringify(saleData),
+                success: function () {
+                    // Limpe o formulário após o sucesso, se necessário
+                    document.getElementById("newSaleForm").reset();
+                    // Exiba a mensagem de sucesso
+                    showMessage("Venda adicionada com sucesso!", "alert-success");
+                },
+                error: function () {
+                    // Exiba a mensagem de falha
+                    showMessage("Erro ao adicionar a venda. Por favor, tente novamente.", "alert-danger");
+                }
+            });
+        }
+
+        // Função para exibir mensagens na tela
+        function showMessage(message, className) {
+            var messageElement = $("#message");
+            messageElement.text(message);
+            messageElement.removeClass();
+            messageElement.addClass("alert " + className);
+            messageElement.show();
+        }
+
+        // Carregue a lista de clientes e métodos de pagamento ao carregar a página
+        $(document).ready(function () {
+            loadCustomerList();
+            loadPaymentMethodList();
+        });
+    </script>
+</body>
+
+</html>
