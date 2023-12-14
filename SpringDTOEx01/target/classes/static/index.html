@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Cadastro</title>
+    <!-- Inclua os links para o Bootstrap -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-top: 50px;
+        }
+        .btn-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 class="mb-4">Sistema de Cadastro</h2>
+    
+    <!-- Formulário de abertura do sistema -->
+    <form>
+        <div class="form-group">
+            <label for="username">Nome de Usuário</label>
+            <input type="text" class="form-control" id="username" placeholder="Digite seu nome de usuário">
+        </div>
+        <div class="form-group">
+            <label for="password">Senha</label>
+            <input type="password" class="form-control" id="password" placeholder="Digite sua senha">
+        </div>
+        <button type="submit" class="btn btn-primary">Entrar</button>
+    </form>
+
+    <!-- Botões de navegação -->
+    <div class="btn-container">
+        <a class="btn btn-success" href="listProduct.html">Listar Produtos</a>
+        <a class="btn btn-info" href="addProduct.html">Adicionar Produto</a>
+    </div>
+</div>
+
+</body>
+</html>

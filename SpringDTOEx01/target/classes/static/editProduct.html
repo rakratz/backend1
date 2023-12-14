@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Produto</title>
+    <!-- Inclua os links para o Bootstrap -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-top: 50px;
+        }
+        .btn-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 class="mb-4">Editar Produto</h2>
+    
+    <!-- Formulário de edição de produto -->
+    <form id="editProductForm">
+        <div class="form-group">
+            <label for="productName">Nome do Produto</label>
+            <input type="text" class="form-control" id="productName" required>
+        </div>
+        <div class="form-group">
+            <label for="productQuantity">Quantidade</label>
+            <input type="number" class="form-control" id="productQuantity" required>
+        </div>
+        <div class="form-group">
+            <label for="productPrice">Preço</label>
+            <input type="number" class="form-control" id="productPrice" step="0.01" required>
+        </div>
+        <button type="button" class="btn btn-primary" onclick="editProduct()">Salvar Alterações</button>
+    </form>
+
+    <!-- Botões de ação -->
+    <div class="btn-container">
+        <a class="btn btn-primary" href="index.html">Voltar para o Início</a>
+        <a class="btn btn-secondary" href="listProduct.html">Ver Lista de Produtos</a>
+    </div>
+</div>
+
+<script>
+    // Função para carregar os dados do produto a ser editado
+    function loadProductData() {
+        // Obtem o ID do produto a partir da URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+
+        // Realiza a chamada à API para obter os detalhes do produto
+        fetch(`/api/products/${productId}`)
+            .then(response => response.json())
+            .then(product => {
+                // Preenche os campos do formulário com os detalhes do produto
+                document.getElementById('productName').value = product.name;
+                document.getElementById('productQuantity').value = product.quantity;
+                document.getElementById('productPrice').value = product.price;
+            })
+            .catch(error => console.error('Erro ao carregar os detalhes do produto:', error));
+    }
+
+    // Função para editar um produto
+    function editProduct() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+        const productName = document.getElementById('productName').value;
+        const productQuantity = document.getElementById('productQuantity').value;
+        const productPrice = document.getElementById('productPrice').value;
+
+        // Realiza a chamada à API para editar o produto
+        fetch(`/api/products/${productId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: productName,
+                quantity: parseInt(productQuantity),
+                price: parseFloat(productPrice),
+            }),
+        })
+        .then(response => response.json())
+        .then(updatedProduct => {
+            console.log('Produto editado com sucesso:', updatedProduct);
+            // Redireciona para a página de listagem após edição
+            window.location.href = 'listProduct.html';
+        })
+        .catch(error => console.error('Erro ao editar o produto:', error));
+    }
+
+    // Carrega os dados do produto ao carregar a página
+    window.onload = loadProductData;
+</script>
+
+</body>
+</html>

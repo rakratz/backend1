@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listagem de Produtos</title>
+    <!-- Inclua os links para o Bootstrap -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-top: 50px;
+        }
+        .btn-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 class="mb-4">Listagem de Produtos</h2>
+    
+    <!-- Pesquisa por nome parcial -->
+    <div class="form-group">
+        <label for="partialName">Pesquisar por Nome Parcial</label>
+        <input type="text" class="form-control" id="partialName" placeholder="Digite parte do nome">
+        <button class="btn btn-primary mt-2" onclick="searchByPartialName()">Pesquisar</button>
+    </div>
+
+    <!-- Tabela de produtos -->
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Quantidade</th>
+                <th>Preço</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="productTableBody"></tbody>
+    </table>
+
+    <!-- Botões de ação -->
+    <div class="btn-container">
+        <a class="btn btn-primary" href="index.html">Voltar para o Início</a>
+        <a class="btn btn-success" href="addProduct.html">Adicionar Novo Produto</a>
+    </div>
+</div>
+
+<script>
+    // Função para buscar produtos na API
+    function fetchProducts() {
+        // Realiza a chamada à API para buscar todos os produtos
+        fetch('/api/products')
+            .then(response => response.json())
+            .then(products => {
+                // Atualiza a tabela de produtos
+                updateProductTable(products);
+            })
+            .catch(error => console.error('Erro ao buscar produtos:', error));
+    }
+
+    // Função para buscar produtos por nome parcial
+    function searchByPartialName() {
+        const partialName = document.getElementById('partialName').value;
+
+        // Realiza a chamada à API para buscar produtos por nome parcial
+        fetch(`/api/products/partialName/${partialName}`)
+            .then(response => response.json())
+            .then(products => {
+                // Atualiza a tabela de produtos
+                updateProductTable(products);
+            })
+            .catch(error => console.error('Erro ao buscar produtos por nome parcial:', error));
+    }
+
+    // Função para atualizar a tabela de produtos
+    function updateProductTable(products) {
+        const tableBody = document.getElementById('productTableBody');
+        tableBody.innerHTML = '';
+
+        for (const product of products) {
+            const row = `<tr>
+                            <td>${product.id}</td>
+                            <td>${product.name}</td>
+                            <td>${product.quantity}</td>
+                            <td>${product.price}</td>
+                            <td>
+                                <a class="btn btn-primary" href="editProduct.html?id=${product.id}">Editar</a>
+                                <button class="btn btn-danger" onclick="confirmDelete(${product.id})">Excluir</button>
+                            </td>
+                        </tr>`;
+            tableBody.innerHTML += row;
+        }
+    }
+
+    // Função para confirmar a exclusão
+    function confirmDelete(productId) {
+        const confirmation = confirm('Tem certeza de que deseja excluir este produto?');
+
+        if (confirmation) {
+            // Realiza a chamada à API para excluir o produto
+            fetch(`/api/products/${productId}`, {
+                method: 'DELETE'
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Produto excluído com sucesso.');
+                    // Atualiza a tabela após a exclusão
+                    fetchProducts();
+                } else {
+                    console.error('Erro ao excluir o produto.');
+                }
+            })
+            .catch(error => console.error('Erro ao excluir o produto:', error));
+        }
+    }
+
+    // Inicializa a lista de produtos ao carregar a página
+    fetchProducts();
+</script>
+
+</body>
+</html>
