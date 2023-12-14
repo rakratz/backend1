@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Context crossContext="true">
+ 
+ 	<Resource name="jdbc/postgresql" auth="Container"
+		type="javax.sql.DataSource" minIdle="20" maxIdle="100"
+		maxWait="30000" username="postgres" password="Aluno@123"
+		driverClassName="org.postgresql.Driver"
+		url="jdbc:postgresql://localhost:5432/jsf_banco" />
+</Context>
