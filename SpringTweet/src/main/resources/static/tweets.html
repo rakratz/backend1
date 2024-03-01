@@ -11,12 +11,63 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <style>
+        .tweet {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+        }
+
+        .tweet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .tweet-content {
+            margin-bottom: 5px;
+        }
+
+        .tweet-actions {
+            display: flex;
+        }
+
+        .tweet-actions button {
+            margin-left: 5px;
+        }
+    </style>
 </head>
 
 <body class="container">
     <h1 class="mt-5">Spring Tweet Frontend - Tweets</h1>
 
     <ul id="tweetList" class="list-group mt-3"></ul>
+
+    <!-- Modal de confirmação de exclusão -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Exclusão</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Tem certeza de que deseja excluir este tweet?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteButton">Excluir</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         // Função para carregar e exibir todos os tweets
@@ -33,14 +84,21 @@
                 const user = await userResponse.json();
 
                 const listItem = document.createElement('li');
-                listItem.className = 'list-group-item';
+                listItem.className = 'list-group-item tweet';
+
                 listItem.innerHTML = `
-                    <strong>Tweet ID:</strong> ${tweet.id}, 
-                    <strong>Content:</strong> ${tweet.content}, 
-                    <strong>Post Time:</strong> ${tweet.postTime},
-                    <strong>User:</strong> ${user.screenName}
-                    <button class="btn btn-danger btn-sm float-right" onclick="deleteTweet(${tweet.id})">Excluir</button>
-                    <a href="updatetweet.html?id=${tweet.id}" class="btn btn-warning btn-sm float-right mr-2">Atualizar</a>
+                    <div class="tweet-header">
+                        <strong>Tweet ID:</strong> ${tweet.id}
+                        <button class="btn btn-danger btn-sm" onclick="confirmDelete(${tweet.id})">Excluir</button>
+                    </div>
+                    <div class="tweet-content">
+                        <p><strong>Content:</strong> ${tweet.content}</p>
+                        <p><strong>Post Time:</strong> ${tweet.postTime}</p>
+                        <p><strong>User:</strong> ${user.screenName}</p>
+                    </div>
+                    <div class="tweet-actions">
+                        <a href="updatetweet.html?id=${tweet.id}" class="btn btn-warning btn-sm">Atualizar</a>
+                    </div>
                 `;
                 tweetList.appendChild(listItem);
             }
@@ -48,6 +106,13 @@
 
         // Carrega e exibe os tweets ao carregar a página
         loadTweets();
+
+        // Função para exibir modal de confirmação de exclusão
+        function confirmDelete(tweetId) {
+            const confirmDeleteButton = document.getElementById('confirmDeleteButton');
+            confirmDeleteButton.setAttribute('onclick', `deleteTweet(${tweetId})`);
+            $('#confirmDeleteModal').modal('show');
+        }
 
         // Função para excluir um tweet
         async function deleteTweet(tweetId) {
@@ -59,6 +124,7 @@
                 if (response.ok) {
                     // Recarrega a lista de tweets após a exclusão
                     loadTweets();
+                    $('#confirmDeleteModal').modal('hide'); // Fecha o modal após a exclusão
                 } else {
                     console.error('Erro ao excluir o tweet.');
                 }
@@ -67,7 +133,7 @@
             }
         }
     </script>
-   
+
     <!-- Link para a página index.html -->
     <a href="index.html" class="btn btn-secondary mt-3">Post New Tweets</a>
 </body>
