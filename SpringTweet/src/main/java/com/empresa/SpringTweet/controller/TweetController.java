@@ -18,6 +18,8 @@ import com.empresa.SpringTweet.repository.TweetRepository;
 
 @RestController
 @RequestMapping("/api/tweets")
+// Ambiente desenvolvido no Visual Code incluir linha abaixo
+//@CrossOrigin(origins = "http://127.0.0.1:5500") 
 public class TweetController {
 
     @Autowired
