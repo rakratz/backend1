@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring Tweet - Novo Funcionário</title>
+
+    <!-- Adicione esses links para incluir o Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body class="container">
+    <div class="mt-5">
+        <h1 class="text-center mb-4">Spring Tweet - Novo Funcionário</h1>
+
+        <form id="employeeForm">
+            <div class="form-group">
+                <label for="name">Nome:</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">E-mail:</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+
+            <button type="button" class="btn btn-primary btn-block" onclick="createEmployee()">Criar Funcionário</button>
+
+            <p id="successMessage" class="text-success mt-3"></p>
+            <p id="errorMessage" class="text-danger"></p>
+        </form>
+    </div>
+
+    <div class="mt-4">
+        <a href="employees.html" class="btn btn-secondary btn-block">Lista Funcionários</a>
+        <!-- Adicione mais links aqui, se necessário -->
+    </div>
+
+    <script>
+        async function createEmployee() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+
+            const employee = {
+                name: name,
+                email: email
+            };
+
+            try {
+                const response = await fetch('http://localhost:8080/api/employees', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(employee),
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Success:', data);
+                    document.getElementById('successMessage').textContent = 'Funcionário criado com sucesso!';
+                    document.getElementById('errorMessage').textContent = ''; // Limpa mensagens de erro anteriores
+                } else {
+                    const errorData = await response.json();
+                    console.error('Error:', errorData);
+                    document.getElementById('errorMessage').textContent = `Erro ao criar o funcionário: ${errorData.message}`;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('errorMessage').textContent = 'Erro ao criar o funcionário. Verifique o console para mais detalhes.';
+            }
+        }
+    </script>
+</body>
+</html>

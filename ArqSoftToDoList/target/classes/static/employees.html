@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Funcionários</title>
+
+    <!-- Adicione esses links para incluir o Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+
+<body class="container">
+    <div class="mt-5">
+        <h1 class="text-center mb-4">Lista de Funcionários</h1>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="employeeList">
+                <!-- Aqui serão exibidos os funcionários -->
+            </tbody>
+        </table>
+
+         <div class="text-center">
+            <a href="index.html" class="btn btn-secondary">Voltar ao Menu Principal</a>
+            <a href="newemployee.html" class="btn btn-secondary">Incluir Novo Funcionário</a>
+        </div>
+    </div>
+
+    <script>
+        // Função para carregar a lista de funcionários
+        async function loadEmployees() {
+            try {
+                const response = await fetch('http://localhost:8080/api/employees');
+                if (!response.ok) {
+                    throw new Error('Erro ao carregar a lista de funcionários');
+                }
+                const employees = await response.json();
+                const employeeList = document.getElementById('employeeList');
+                employeeList.innerHTML = ''; // Limpa a lista antes de adicionar os novos funcionários
+                employees.forEach(employee => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${employee.name}</td>
+                        <td>${employee.email}</td>
+                        <td>
+                            <button class="btn btn-primary btn-sm mr-2" onclick="editEmployee(${employee.id})">Atualizar</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteEmployee(${employee.id})">Excluir</button>
+                        </td>
+                    `;
+                    employeeList.appendChild(tr);
+                });
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao carregar a lista de funcionários');
+            }
+        }
+
+        // Função para excluir um funcionário
+        async function deleteEmployee(employeeId) {
+            if (confirm('Tem certeza que deseja excluir este funcionário?')) {
+                try {
+                    const response = await fetch(`http://localhost:8080/api/employees/${employeeId}`, {
+                        method: 'DELETE',
+                    });
+                    if (!response.ok) {
+                        throw new Error('Erro ao excluir o funcionário');
+                    }
+                    alert('Funcionário excluído com sucesso');
+                    loadEmployees(); // Recarrega a lista após excluir o funcionário
+                } catch (error) {
+                    console.error('Erro:', error);
+                    alert('Erro ao excluir o funcionário');
+                }
+            }
+        }
+
+        // Função para redirecionar para a página de atualização de funcionário
+        function editEmployee(employeeId) {
+            // Implemente o redirecionamento para a página de atualização de funcionário, se necessário
+            // Exemplo: window.location.href = `updateEmployee.html?id=${employeeId}`;
+            alert(`Implemente a página de atualização de funcionário com o ID ${employeeId}`);
+        }
+
+        // Carrega a lista de funcionários ao carregar a página
+        loadEmployees();
+    </script>
+</body>
+
+</html>
