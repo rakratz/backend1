@@ -2,14 +2,12 @@ package View;
 
 import java.util.List;
 import java.util.Scanner;
-
 import Model.Pessoa;
 
-
 public class PessoaView {
-	private Scanner scanner = new Scanner(System.in);
-	
-	public int exibirMenu() {
+    private Scanner scanner = new Scanner(System.in);
+
+    public int exibirMenu() {
         System.out.println("\nMenu:");
         System.out.println("1. Adicionar Cliente");
         System.out.println("2. Adicionar Funcionário");
@@ -18,20 +16,22 @@ public class PessoaView {
         System.out.println("5. Remover Pessoa");
         System.out.println("0. Sair");
         System.out.print("Escolha uma opção: ");
-        return scanner.nextInt();
-    }
-	
-	public String obterInput(String mensagem) {
-        System.out.print(mensagem);
-        scanner.nextLine();  // Limpar buffer
-        return scanner.nextLine();
+        
+        int opcao = scanner.nextInt();
+        scanner.nextLine();  // Limpar o buffer após ler o número
+        return opcao;
     }
 
-	public void exibirMensagem(String mensagem) {
+    public String obterInput(String mensagem) {
+        System.out.print(mensagem);
+        return scanner.nextLine();
+    }
+    
+    public void exibirMensagem(String mensagem) {
         System.out.println(mensagem);
     }
-	
-	public void exibirLista(List<Pessoa> pessoas) {
+
+    public void exibirLista(List<Pessoa> pessoas) {
         System.out.println("Lista de Pessoas:");
         pessoas.forEach(System.out::println);
     }

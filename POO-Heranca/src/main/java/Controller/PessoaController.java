@@ -9,14 +9,14 @@ import Service.PessoaService;
 import View.PessoaView;
 
 public class PessoaController {
-	private PessoaService service;
+    private PessoaService service;
     private PessoaView view;
-    
+
     public PessoaController(PessoaService service, PessoaView view) {
         this.service = service;
         this.view = view;
     }
-    
+
     public void iniciar() {
         int opcao;
         do {
@@ -32,7 +32,7 @@ public class PessoaController {
             }
         } while (opcao != 0);
     }
-    
+
     private void adicionarCliente() {
         String nome = view.obterInput("Nome do Cliente: ");
         int idade = Integer.parseInt(view.obterInput("Idade do Cliente: "));
@@ -40,7 +40,7 @@ public class PessoaController {
         service.adicionarCliente(nome, idade, email);
         view.exibirMensagem("Cliente adicionado com sucesso!");
     }
-    
+
     private void adicionarFuncionario() {
         String nome = view.obterInput("Nome do Funcionário: ");
         int idade = Integer.parseInt(view.obterInput("Idade do Funcionário: "));
@@ -48,7 +48,7 @@ public class PessoaController {
         service.adicionarFuncionario(nome, idade, cargo);
         view.exibirMensagem("Funcionário adicionado com sucesso!");
     }
-    
+
     private void listarPessoas() {
         List<Pessoa> pessoas = service.listarPessoas();
         if (pessoas.isEmpty()) {
@@ -57,13 +57,13 @@ public class PessoaController {
             view.exibirLista(pessoas);
         }
     }
-    
+
     private void editarPessoa() {
         int id = Integer.parseInt(view.obterInput("Digite o ID da pessoa que deseja editar: "));
         String nome = view.obterInput("Novo nome: ");
         int idade = Integer.parseInt(view.obterInput("Nova idade: "));
         String extraInfo;
-        
+
         Pessoa pessoa = service.encontrarPessoaPorId(id);
         if (pessoa instanceof Cliente) {
             extraInfo = view.obterInput("Novo email: ");
@@ -73,11 +73,11 @@ public class PessoaController {
             view.exibirMensagem("Pessoa não encontrada.");
             return;
         }
-        
+
         boolean sucesso = service.editarPessoa(id, nome, idade, extraInfo);
         view.exibirMensagem(sucesso ? "Pessoa editada com sucesso!" : "Erro ao editar pessoa.");
     }
-    
+
     private void removerPessoa() {
         int id = Integer.parseInt(view.obterInput("Digite o ID da pessoa que deseja remover: "));
         boolean sucesso = service.removerPessoa(id);

@@ -1,29 +1,28 @@
 package Model;
 
-public class Funcionario extends Pessoa{
-	private String Cargo;
-	
-	public Funcionario(){
-		
+public class Funcionario extends Pessoa {
+	private String cargo;
+
+	public Funcionario() {
+
 	}
-	
-	public Funcionario(int id, String nome, int idade, String Cargo){
+
+	public Funcionario(int id, String nome, int idade, String cargo) {
 		super(id, nome, idade);
-		this.Cargo = Cargo;
+		this.cargo = cargo;
 	}
 
 	public String getCargo() {
-		return Cargo;
+		return cargo;
 	}
 
 	public void setCargo(String cargo) {
-		Cargo = cargo;
+		cargo = cargo;
 	}
 
 	@Override
 	public String toString() {
-		return "Funcionario [Cargo=" + Cargo + "]";
+		return super.toString() + ", Cargo: " + cargo;
 	}
 
-	
 }

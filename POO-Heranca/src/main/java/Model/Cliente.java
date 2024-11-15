@@ -21,7 +21,7 @@ public class Cliente extends Pessoa{
 	}
 
 	@Override
-	public String toString() {
-		return "Cliente [email=" + email + "]";
-	}
+    public String toString() {
+        return super.toString() + ", Email: " + email;
+    }
 }
