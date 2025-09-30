@@ -1,7 +1,14 @@
-INSERT INTO tb_department(name) VALUES ('Gestão');
-INSERT INTO tb_department(name) VALUES ('Informática');
+INSERT INTO TB_DEPARTAMENT (NAME) VALUES ('Gestão'); 
+INSERT INTO TB_DEPARTAMENT (NAME) VALUES ('Informática');
 
-INSERT INTO tb_user(department_id, name, email) VALUES (1, 'Maria', 'maria@gmail.com');
-INSERT INTO tb_user(department_id, name, email) VALUES (1, 'Bob', 'bob@gmail.com');
-INSERT INTO tb_user(department_id, name, email) VALUES (2, 'Alex', 'alex@gmail.com');
-INSERT INTO tb_user(department_id, name, email) VALUES (2, 'Ana', 'ana@gmail.com');
+INSERT INTO TB_USER (DEPARTMENT_ID, NAME, EMAIL)
+SELECT d.ID, 'Maria', 'maria@gmail.com' FROM TB_DEPARTAMENT d WHERE d.NAME='Gestão';
+
+INSERT INTO TB_USER (DEPARTMENT_ID, NAME, EMAIL)
+SELECT d.ID, 'Bob', 'bob@gmail.com' FROM TB_DEPARTAMENT d WHERE d.NAME='Gestão';
+
+INSERT INTO TB_USER (DEPARTMENT_ID, NAME, EMAIL)
+SELECT d.ID, 'Alex', 'alex@gmail.com' FROM TB_DEPARTAMENT d WHERE d.NAME='Informática';
+
+INSERT INTO TB_USER (DEPARTMENT_ID, NAME, EMAIL)
+SELECT d.ID, 'Ana', 'ana@gmail.com' FROM TB_DEPARTAMENT d WHERE d.NAME='Informática';
