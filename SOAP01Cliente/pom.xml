@@ -1,0 +1,89 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.exemplo</groupId>
+  <artifactId>SOAP01Cliente</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+
+  <properties>
+    <maven.compiler.source>17</maven.compiler.source>   <!-- use 11 se preferir -->
+    <maven.compiler.target>17</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <jaxws.version>4.0.3</jaxws.version>
+  </properties>
+
+  <dependencies>
+    <!-- Runtime JAX-WS (Metro) -->
+    <dependency>
+      <groupId>com.sun.xml.ws</groupId>
+      <artifactId>jaxws-rt</artifactId>
+      <version>${jaxws.version}</version>
+    </dependency>
+    <!-- JAXB (necessário no Java 11+) -->
+    <dependency>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-runtime</artifactId>
+      <version>4.0.5</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!-- Gera stubs a partir do WSDL -->
+      <plugin>
+        <groupId>com.sun.xml.ws</groupId>
+        <artifactId>jaxws-maven-plugin</artifactId>
+        <version>${jaxws.version}</version>
+        <executions>
+          <execution>
+            <goals><goal>wsimport</goal></goals>
+            <configuration>
+              <wsdlUrls>
+                <!-- use a URL se o serviço estiver rodando -->
+                <wsdlUrl>http://localhost:8085/service/certidao?wsdl</wsdlUrl>
+                <!-- ou comente a linha acima e use um arquivo local:
+                <wsdlUrl>${project.basedir}/src/main/resources/certidao.wsdl</wsdlUrl>
+                -->
+              </wsdlUrls>
+              <packageName>client.stub</packageName>
+              <keep>true</keep>
+              <sourceDestDir>${project.build.directory}/generated-sources/wsimport</sourceDestDir>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Marca a pasta gerada como "source folder" (IDE reconhece os stubs) -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>3.5.0</version>
+        <executions>
+          <execution>
+            <id>add-wsimport-sources</id>
+            <phase>generate-sources</phase>
+            <goals><goal>add-source</goal></goals>
+            <configuration>
+              <sources>
+                <source>${project.build.directory}/generated-sources/wsimport</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Compilador -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.11.0</version>
+        <configuration>
+          <source>${maven.compiler.source}</source>
+          <target>${maven.compiler.target}</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

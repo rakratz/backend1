@@ -1,0 +1,33 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.exemplo</groupId>
+  <artifactId>SOAP01</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  
+  
+  <dependencies>
+	<!-- https://mvnrepository.com/artifact/jakarta.xml.ws/jakarta.xml.ws-api -->
+	<dependency>
+	    <groupId>jakarta.xml.ws</groupId>
+	    <artifactId>jakarta.xml.ws-api</artifactId>
+	    <version>4.0.2</version>
+	</dependency>
+	
+	<!-- https://mvnrepository.com/artifact/com.sun.xml.ws/jaxws-rt -->
+	<dependency>
+	    <groupId>com.sun.xml.ws</groupId>
+	    <artifactId>jaxws-rt</artifactId>
+	    <version>4.0.3</version>
+	</dependency>
+	
+	
+	<!-- https://mvnrepository.com/artifact/com.sun.xml.ws/jaxws-ri -->
+	<dependency>
+	    <groupId>com.sun.xml.ws</groupId>
+	    <artifactId>jaxws-ri</artifactId>
+	    <version>4.0.3</version>
+	    <type>pom</type>
+	</dependency>
+  </dependencies>
+
+</project>
