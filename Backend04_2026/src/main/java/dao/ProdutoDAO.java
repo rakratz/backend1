@@ -25,7 +25,8 @@ public class ProdutoDAO {
 	}
 	
 	public List<Produto> listar() throws SQLException {
-		String sql = "SELECT id, nome, preco FROM produto ORDER BY id";
+		 String sql = "SELECT id, nome, preco FROM produto ORDER BY id";
+		 
 		 List<Produto> produtos = new ArrayList<>();
 		 try(Connection conexao = Banco.conectar(); 
 			 PreparedStatement comando = conexao.prepareStatement(sql);
@@ -41,5 +42,33 @@ public class ProdutoDAO {
 			}
 		 
 		return produtos;
+	}
+	
+	
+	public boolean atualizar(Produto produto) throws SQLException{
+		String sql = "UPDATE produto SET nome = ?, preco = ? WHERE id = ?";
+		
+		try(Connection conexao = Banco.conectar(); 
+				PreparedStatement comando = conexao.prepareStatement(sql)){
+				comando.setString(1, produto.getNome());
+				comando.setBigDecimal(2, produto.getPreco());
+				comando.setInt(3, produto.getId());
+				
+				return comando.executeUpdate() > 0;
+			}
+		
+	}
+	
+	public boolean excluir(int id) throws SQLException{
+		String sql = "DELETE FROM produto WHERE id = ?";
+		
+		try(Connection conexao = Banco.conectar(); 
+				PreparedStatement comando = conexao.prepareStatement(sql)){
+			
+				comando.setInt(1, id);
+				
+				return comando.executeUpdate() > 0;
+			}
+		
 	}
 }
