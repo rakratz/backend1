@@ -17,15 +17,15 @@ public class Banco {
 	// Estamos testando é vai rodar em memória o H2, precisamos criar as tabelas aqui
 	
 	public static void criarTabela() throws SQLException {
-    String sql = "CREATE TABLE IF NOT EXISTS produto ("
-            + "id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, "
-            + "nome VARCHAR(100) NOT NULL, "
-            + "preco DECIMAL(10, 2) NOT NULL CHECK (preco >= 0)"
-            + ")";
+	    String sql = "CREATE TABLE IF NOT EXISTS produto ("
+	            + "id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, "
+	            + "nome VARCHAR(100) NOT NULL, "
+	            + "preco DECIMAL(10, 2) NOT NULL CHECK (preco >= 0)"
+	            + ")";
 
-    try (Connection conexao = conectar();
-         Statement comando = conexao.createStatement()) {
-        comando.executeUpdate(sql);
-    }
-}
+	    try (Connection conexao = conectar();
+	         Statement comando = conexao.createStatement()) {
+	        comando.executeUpdate(sql);
+	    }
+	}
 }
