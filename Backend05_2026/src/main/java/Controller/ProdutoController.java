@@ -1,6 +1,7 @@
 package Controller;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import DAO.ProdutoDAO;
 import Model.Produto;
@@ -34,6 +35,15 @@ public class ProdutoController {
 			view.mostrarMensagem("Erro ao Cadastrar o produto: " + e.getMessage());
 			
 		}
+	}
+	
+	public void listarProdutos() {
+	    try {
+	        List<Produto> produtos = dao.listarTodos();
+	        view.mostrarProdutos(produtos);
+	    } catch (SQLException e) {
+	        view.mostrarMensagem("Erro ao listar os produtos: " + e.getMessage());
+	    }
 	}
 
 }

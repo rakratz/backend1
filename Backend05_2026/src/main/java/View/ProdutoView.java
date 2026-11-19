@@ -1,6 +1,7 @@
 package View;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Scanner;
 
 import Model.Produto;
@@ -29,6 +30,19 @@ public class ProdutoView {
 		
 		
 		return new Produto(0, nome, preco, quantidade);
+	}
+	
+	public void mostrarProdutos(List<Produto> produtos) {
+	    System.out.println("\n=== Produtos cadastrados ===");
+
+	    if (produtos.isEmpty()) {
+	        mostrarMensagem("Nenhum produto cadastrado.");
+	        return;
+	    }
+
+	    for (Produto produto : produtos) {
+	        System.out.println(produto);
+	    }
 	}
 	
 	public void mostrarMensagem(String mensagem) {

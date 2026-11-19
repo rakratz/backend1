@@ -2,7 +2,10 @@ package DAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import Model.Produto;
 
@@ -25,5 +28,28 @@ public class ProdutoDAO {
 
             comando.executeUpdate();
         }
+    }
+    
+    public List<Produto> listarTodos() throws SQLException {
+    		String sql = "SELECT id, nome, preco, quantidade FROM produto ORDER BY id";
+    		List<Produto> produtos = new ArrayList<>();
+    		
+    		try (Connection banco = conexao.abrir();
+    		         PreparedStatement comando = banco.prepareStatement(sql);
+    		         ResultSet resultado = comando.executeQuery()) {
+
+    		        while (resultado.next()) {
+    		            Produto produto = new Produto(
+    		                resultado.getInt("id"),
+    		                resultado.getString("nome"),
+    		                resultado.getBigDecimal("preco"),
+    		                resultado.getInt("quantidade")
+    		            );
+
+    		            produtos.add(produto);
+    		        }
+    		    }
+
+    		    return produtos;
     }
 }
