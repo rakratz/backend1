@@ -68,12 +68,13 @@ public class Pessoa {
 	public void setTelefone(String telefone) {
 		this.telefone = telefone;
 	}
-
-	@Override
-	public String toString() {
-		return "Pessoa [codigo=" + codigo + ", nome=" + nome + ", dataNascimento=" + dataNascimento + ", email=" + email
-				+ ", telefone=" + telefone + "]";
+	
+	public String getDescricao() {
+		return getNome() + 
+				"| Código: " + getCodigo() +
+				"| Data de Nascimento: " + getDataNascimento() +
+				"| E-mail: " + getEmail() +
+				"| Telefone: " + getTelefone();
 	}
 
-	
 }
