@@ -25,6 +25,31 @@ public class Professor extends Pessoa {
 		this.disciplina = disciplina;
 		this.titulacao = titulacao;
 	}
+	
+	
+	
+    public String getDisciplina() {
+		return disciplina;
+	}
+
+	public void setDisciplina(String disciplina) {
+		this.disciplina = disciplina;
+	}
+
+	public Titulacao getTitulacao() {
+		return titulacao;
+	}
+
+	public void setTitulacao(Titulacao titulacao) {
+		this.titulacao = titulacao;
+	}
+
+	@Override
+    public String getDescricao() {
+        return super.getDescricao()
+                + " | Diciplina: " + getDisciplina()
+                + " | Títulação: " + getTitulacao();
+    }
 
 	
 }
